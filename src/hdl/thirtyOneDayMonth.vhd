@@ -53,27 +53,36 @@ library ieee;
   use ieee.numeric_std.all;
 
 -- entity name should match filename, this has been filled out for you  
-entity thirtyOneDayMonth is 
-  port(
-	i_A : in std_logic; -- one of four inputs
-	
-	
-	
-						-- output
-  );
-end thirtyOneDayMonth;
+entity ThirtyOneDayMonth is
+    Port (
+        i_A : in std_logic;  -- Most significant bit
+        i_B : in std_logic;
+        i_C : in std_logic;
+        i_D : in std_logic;
+        o_Y : out std_logic  -- Output: 1 if month has 31 days, 0 otherwise
+    );
+end ThirtyOneDayMonth;
+
 
 architecture thirtyOneDayMonth_arch of thirtyOneDayMonth is 
 	-- include components declarations and signals
 	
 	--signals internal to the architecture are declared and initialized such as w_sel
-  
+  signal w_sel : std_logic_vector (2 downto 0); -- MUX sel
+
 begin
 	-- CONCURRENT STATEMENTS---------------------------------------
 	--assigning names to reflect original schematics (for ease of understanding if you wish to)
-	w_sel(0) <= i_C;	-- one
-	--finish assigning signals
-	
-	--enter your logic here to implement the mux.  See VHDL reference sheet for MUX syntax.	
-	---------------------------------------------------------------	
-end thirtyOneDayMonth_arch;
+	w_sel(0) <= i_C;
+	w_sel(1) <= i_B;
+	w_sel(2) <= i_A;	-- one
+	--finish assigning signals	  -- Check conditions for months with 31 days based on i_A, i_B, i_C inputs
+o_Y <= '1' when (i_A = '0' and i_B = '0' and i_C = '0' and i_D = '1') or -- January
+                       (i_A = '0' and i_B = '0' and i_C = '1' and i_D = '1') or -- March
+                       (i_A = '0' and i_B = '1' and i_C = '0' and i_D = '1') or -- May
+                       (i_A = '0' and i_B = '1' and i_C = '1' and i_D = '1') or -- July
+                       (i_A = '1' and i_B = '0' and i_C = '0' and i_D = '0') or -- August
+                       (i_A = '1' and i_B = '0' and i_C = '1' and i_D = '0') or -- October
+                       (i_A = '1' and i_B = '1' and i_C = '0' and i_D = '0')    -- December
+                 else '0'; -- For all other combinations
+ end thirtyOneDayMonth_arch;
